@@ -17,23 +17,30 @@ std::string gstreamer_pipeline (int capture_width, int capture_height, int displ
 
 int main()
 {
+    int sensor_id = 1;
     int capture_width = 1280 ;
     int capture_height = 720 ;
-    int display_width = 1280 ;
-    int display_height = 720 ;
+    int display_width = 960 ;
+    int display_height = 540 ;
     int framerate = 30 ;
     int flip_method = 2;
     // Original value	
     //int flip_method = 0 ;
 
+    /*
     std::string pipeline = gstreamer_pipeline(capture_width,
 	capture_height,
 	display_width,
 	display_height,
 	framerate,
 	flip_method);
+   // std::cout << "Using pipeline: \n\t" << pipeline << "\n";
+    */
+
+    std::string pipeline = "nvarguscamerasrc sensor-id=" + std::to_string(1) + " ! video/x-raw(memory:NVMM), width=" + std::to_string(capture_width) + ", height=" + std::to_string(capture_height) + ", format=NV12, framerate=" + std::to_string(framerate) + "/1 ! nvvidconv flip-method=" + std::to_string(flip_method) + " ! video/x-raw, width=" + std::to_string(display_width) + ", height=" + std::to_string(display_height) + ", format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink";
+
     std::cout << "Using pipeline: \n\t" << pipeline << "\n";
- 
+
     cv::VideoCapture cap(pipeline, cv::CAP_GSTREAMER);
     if(!cap.isOpened()) {
 	std::cout<<"Failed to open camera."<<std::endl;
